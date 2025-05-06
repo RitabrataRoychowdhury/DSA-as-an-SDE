@@ -16,6 +16,13 @@ To move n disks from A → C:
 2. Move the nth (largest) disk from A → C.
 3. Move n-1 disks from B → C using A as auxiliary.
 
+Recursion Subproblems:
+-----------------------
+1. Move the smaller discs from A → B using C  
+   ↳ Think of this as isolating the largest disk.
+2. Move the largest (nth) disk directly from A → C  
+3. Move the lower (previously moved) discs from B → C using A  
+
 Code Pattern:
 -------------
 void hanoi(int n, char A, char B, char C) {
