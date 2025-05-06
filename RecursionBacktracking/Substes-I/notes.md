@@ -1,11 +1,12 @@
-
 # Subsets Problem
 
 ## Problem Description
 
-Given a collection of distinct integers, `nums`, return all possible subsets (the power set). 
+Given a collection of distinct integers, `nums`, return all possible subsets (the power set).
 
 The solution set must not contain duplicate subsets.
+
+---
 
 ### Example:
 **Input**:
@@ -27,6 +28,8 @@ nums = [1, 2, 3]
 ]
 ```
 
+---
+
 ## Approach 1: Iterative (For Loop Based)
 
 ### Explanation:
@@ -39,20 +42,13 @@ The for-loop based approach generates subsets iteratively by building upon exist
 
 ### Code:
 ```cpp
-#include <vector>
-#include <iostream>
-
-using namespace std;
-
 vector<vector<int>> subsets(vector<int>& nums) {
     vector<vector<int>> res;
     res.push_back({}); // Start with an empty subset
 
-    // Iterate through each element in nums
     for (int num : nums) {
-        int n = res.size(); // Get the current size of the result list
+        int n = res.size();
         for (int i = 0; i < n; i++) {
-            // Copy existing subsets and add the current number to each of them
             vector<int> temp = res[i];
             temp.push_back(num);
             res.push_back(temp);
@@ -60,21 +56,6 @@ vector<vector<int>> subsets(vector<int>& nums) {
     }
 
     return res;
-}
-
-int main() {
-    vector<int> nums = {1, 2, 3};
-    vector<vector<int>> result = subsets(nums);
-    
-    // Print the result
-    for (const auto& subset : result) {
-        for (int num : subset) {
-            cout << num << " ";
-        }
-        cout << endl;
-    }
-
-    return 0;
 }
 ```
 
@@ -87,57 +68,30 @@ int main() {
 ## Approach 2: Recursive (Binary Recursion Based)
 
 ### Explanation:
-The recursive approach uses a **binary recursion** strategy similar to the inorder traversal technique, where we decide at each point whether to include the current number in the subset or not.
-
-1. Use a recursive function to build subsets.
-2. For each index, we either include the element at that index or exclude it.
-3. Recursion explores both possibilities (include or exclude) and builds the subsets.
-4. The base case is when all elements have been considered.
+This uses binary recursion to decide whether to include or exclude each element at every step. Subsets are only added at the leaf level.
 
 ### Code:
 ```cpp
-#include <vector>
-#include <iostream>
-
-using namespace std;
-
-void backtrack(vector<int>& nums, int index, vector<int>& current, vector<vector<int>>& result) {
-    // Base case: When we've considered all elements, add the current subset
-    if (index == nums.size()) {
-        result.push_back(current);
+void binaryRecurse(vector<int>& nums, vector<vector<int>> &res, vector<int>& temp, int index) {
+    if (nums.size() == index) {
+        res.push_back(temp);
         return;
     }
-    
-    // Exclude the current number and move to the next
-    backtrack(nums, index + 1, current, result);
-    
-    // Include the current number and move to the next
-    current.push_back(nums[index]);
-    backtrack(nums, index + 1, current, result);
-    // Backtrack: remove the last added element before moving to the next possibility
-    current.pop_back();
+
+    // Include the current number
+    temp.push_back(nums[index]);
+    binaryRecurse(nums, res, temp, index + 1);
+    temp.pop_back();
+
+    // Exclude the current number
+    binaryRecurse(nums, res, temp, index + 1);
 }
 
 vector<vector<int>> subsets(vector<int>& nums) {
-    vector<vector<int>> result;
-    vector<int> current;
-    backtrack(nums, 0, current, result);
-    return result;
-}
-
-int main() {
-    vector<int> nums = {1, 2, 3};
-    vector<vector<int>> result = subsets(nums);
-
-    // Print the result
-    for (const auto& subset : result) {
-        for (int num : subset) {
-            cout << num << " ";
-        }
-        cout << endl;
-    }
-
-    return 0;
+    vector<vector<int>> res;
+    vector<int> temp;
+    binaryRecurse(nums, res, temp, 0);
+    return res;
 }
 ```
 
@@ -147,6 +101,46 @@ int main() {
 
 ---
 
-## Summary:
-- **For-Loop Approach**: Iterates through the elements and builds subsets iteratively. Simple to implement and easy to understand.
-- **Recursive Approach (Binary Recursion)**: Explores both the inclusion and exclusion of each element at each step, using backtracking to ensure all possibilities are covered.
+## Approach 3: Recursive (DFS Based with For-Loop)
+
+### Explanation:
+This DFS (depth-first search) based method uses a for-loop inside recursion to generate all subsets starting from the current index.
+
+### Code:
+```cpp
+void dfs(vector<int> &nums, vector<vector<int>> &res, vector<int> &temp, int index) {
+    res.push_back(temp);
+    for (int i = index; i < nums.size(); i++) {
+        temp.push_back(nums[i]);
+        dfs(nums, res, temp, i + 1);
+        temp.pop_back(); // backtrack
+    }
+}
+
+vector<vector<int>> subsets(vector<int>& nums) {
+    vector<vector<int>> res;
+    vector<int> temp;
+    dfs(nums, res, temp, 0);
+    return res;
+}
+```
+
+### Time and Space Complexity:
+- **Time Complexity**: O(2^n)
+- **Space Complexity**: O(n) (Recursion depth)
+
+---
+
+## Summary Table
+
+| Approach Type | Technique        | Code Structure | Adds Subsets At |
+|---------------|------------------|----------------|-----------------|
+| Iterative     | For-loop         | Two loops      | Every step      |
+| Recursive     | Binary Recursion | Two recursive calls | Leaf nodes only |
+| Recursive     | DFS + For-loop   | For loop + Rec | Every recursion step |
+
+---
+
+## Tips
+- For interview purposes, the **binary recursion** approach is most intuitive to reason about.
+- The **DFS + for-loop** version is useful for problems like **combinations** or **permutations**.
