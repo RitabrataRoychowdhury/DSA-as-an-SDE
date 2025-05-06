@@ -1,0 +1,35 @@
+# C++ object and binary files
+*.o
+*.obj
+*.out
+*.exe
+*.a
+*.so
+*.dll
+
+# Compiled executables (like Hanoi)
+Hanoi
+Hanoi.exe
+
+# Core dumps
+core
+*.core
+
+# VS Code settings
+.vscode/
+
+# macOS specific
+.DS_Store
+
+# Temporary files
+*~
+*.swp
+*.swo
+*.tmp
+
+# CMake or Make build directories
+/build/
+/cmake-build-*/
+
+# Logs
+*.log
