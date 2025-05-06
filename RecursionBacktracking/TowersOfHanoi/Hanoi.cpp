@@ -35,36 +35,22 @@ using max_heap = priority_queue<T>;
 // Macro for Test Cases
 #define TEST_CASES int tc; cin >> tc; while(tc--)
 
-// Function to print the Hanoi banner
-void printHanoiBanner() {
-    cout << R"(hanoi(3, A, B, C)
-├── hanoi(2, A, C, B)
-│   ├── hanoi(1, A, B, C) → Move 1 A → C
-│   ├── Move 2 A → B
-│   └── hanoi(1, C, A, B) → Move 1 C → B
-├── Move 3 A → C
-└── hanoi(2, B, A, C)
-    ├── hanoi(1, B, C, A) → Move 1 B → A
-    ├── Move 2 B → C
-    └── hanoi(1, A, B, C) → Move 1 A → C
-    )" << "\n\n";
-}
-
 // Hanoi Recursive Function to solve the puzzle
-void hanoi(int n, char source, char auxiliary, char destination) {
+void hanoi(int n, char A, char B, char C) {
     if (n == 1) {
-        cout << "Move disk 1 from " << source << " to " << destination << "\n";
+        cout << "Move disk 1 from " << A << " to " << C << "\n";
         return;
     }
-    // Move top n-1 disks from source to auxiliary
-    hanoi(n - 1, source, destination, auxiliary);
-    
-    // Move the nth disk from source to destination
-    cout << "Move disk " << n << " from " << source << " to " << destination << "\n";
-    
-    // Move n-1 disks from auxiliary to destination
-    hanoi(n - 1, auxiliary, source, destination);
+    // Move top n-1 disks from A to B using C as auxiliary
+    hanoi(n - 1, A, C, B);
+
+    // Move the nth disk from A to C
+    cout << "Move disk " << n << " from " << A << " to " << C << "\n";
+
+    // Move n-1 disks from B to C using A as auxiliary
+    hanoi(n - 1, B, A, C);
 }
+
 
 // Main Solution Class
 class Solution {
@@ -78,7 +64,6 @@ public:
 
 int main() {
     fast_io(); // Enable fast I/O
-    printHanoiBanner(); // Print the Hanoi banner before running test cases
     TEST_CASES {
         Solution sol;
         sol.solve();
