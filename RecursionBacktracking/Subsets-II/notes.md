@@ -82,6 +82,27 @@ if (index == 0 || nums[index] != nums[index - 1] || included[index - 1]) {
 }
 ```
 
+
+---
+
+
+### ✍️ Visualing the duplicate pruning condition
+```Annotated Subset Tree (skips marked with 🚫)
+                                     []
+                       _____________/ \_____________
+                      /                             \
+                   [1]                             []         ← (index 0 — allowed)
+             ______/ \______                ________/ \______
+            /               \              /                \
+        [1,2]             [1]           [2]                []  ← (2 at index 1 — allowed)
+       /     \           /  \          /   \              /  \
+ [1,2,2]  [1,2]      🚫[1,2]  [1]   [2,2]   [2]        🚫[2]   []  
+   /   \                      ❌(skip 2@2)           /     \        
+[1,2,2,2] 🚫[1,2,2]                       [2,2,2] 🚫[2,2]            ❌(skip 2@3 if prev not included)
+         ❌(skip 2@3)                            ❌(skip 2@3)    
+
+```
+
 ---
 
 ### 🛠️ Optimization Notes
