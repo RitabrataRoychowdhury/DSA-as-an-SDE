@@ -136,6 +136,33 @@ public:
     }
 };
 
+class Solution {
+public:
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<vector<int>> res;
+        vector<int> temp;
+        dfs(candidates, res, temp, target, 0);
+        return res;
+    }
+    void dfs(vector<int>& candidates, vector<vector<int>>& res, vector<int>& temp, int target, int index) {
+        if(target == 0){
+            res.push_back(temp);
+            return;
+        }
+        if(index >= candidates.size() || target < 0) return;
+
+        temp.push_back(candidates[index]);
+        dfs(candidates, res, temp, target - candidates[index], index + 1);
+        temp.pop_back();
+        int nextIndex = index + 1;
+        while(nextIndex < candidates.size() && candidates[nextIndex] == candidates[index]){
+            nextIndex++;
+        } 
+        dfs(candidates, res, temp, target, nextIndex);
+    }
+};
+
 // ========================================================================
 // Main Function
 // ========================================================================
