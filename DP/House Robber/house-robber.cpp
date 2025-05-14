@@ -100,8 +100,10 @@ const auto _ = std::cin.tie(nullptr)->sync_with_stdio(false);
 
 #define LC_HACK
 #ifdef LC_HACK
-const auto __ = []() {
-    struct ___ {
+const auto __ = []()
+{
+    struct ___
+    {
         static void _() { std::ofstream("display_runtime.txt") << 0 << '\n'; }
     };
     std::atexit(&___::_);
@@ -112,48 +114,39 @@ const auto __ = []() {
 // ========================================================================
 // Problem Solution Class
 // ========================================================================
-class Solution {
+class Solution
+{
 public:
-    int minCoins = INT_MAX;
-
-    void dfs(vector<int>& coins, int amount, int count){
-        if(amount < 0)return;
-        if(amount == 0){
-            minCoins = min(minCoins, count);
-            return;
-        }
-        for(int coin : coins){
-            dfs(coins, amount - coin, count + 1);
-        }
+    int dfs(int index, vector<int> &nums)
+    {
+        // base case
+        if (index >= nums.size())
+            return 0;
+        return max(dfs(index + 1, nums), nums[index] + dfs(index + 2, nums));
     }
-    int coinChange(vector<int>& coins, int amount) {
-        dfs(coins, amount, 0);
-        return minCoins == INT_MAX ? -1 : minCoins;
-    }
-
-    void dfsBranched(vector<int>& coins, int amount, int count, int index){
-        if(amount < 0 || index >= coins.size()) return;
-        if(amount == 0){
-            minCoins = min(minCoins, count);
-        }
-        dfsBranched(coins, amount - coins[index], count + 1, index);
-        dfsBranched(coins, amount,count, index + 1);
+    int rob(vector<int> &nums)
+    {
+        return dfs(0, nums);
     }
 };
 
-class DP{
-    public:
-    int coinChange(vector<int>& coins, int amount) {
-        vector<int> dp(amount + 1, amount + 1); //dp[i] = min no. coins required to make amount i
-        dp[0] = 0;
-        for(int i=1;i<=amount;i++){
-            for(int coin : coins){
-                if(i - coin >= 0){
-                    dp[i] = min(dp[i], dp[i - coin] + 1);
-                }
-            }
+// bottom-up
+class SolutionDP
+{
+public:
+    // what will be dp[i] = max value gen till house i
+    int rob(vector<int> &nums)
+    {
+        int n = nums.size();
+        if(n == 0) return 0;
+        if(n==1) return 1;
+        vector<int> dp(n);
+        dp[0] = nums[0];
+        dp[1] = max(nums[0], nums[1]);
+        for(int i=2;i<n;i++){
+            dp[i] = max(dp[i - 1], nums[i] + dp[i - 2]);
         }
-        return dp[amount] > amount ? -1 : dp[amount];
+        return dp[n - 1];
     }
 };
 
@@ -165,10 +158,9 @@ int32_t main()
     fast_io();
 
     Solution sol;
-    vector<int> coins = {1, 2, 5};
-    int amount = 11;
+    vector<int> houses = {1, 2, 5};
 
-    int result = sol.coinChange(coins, amount);
+    int result = sol.rob(houses);
 
     cout << "Minimum coins required: " << result << endl;
 
