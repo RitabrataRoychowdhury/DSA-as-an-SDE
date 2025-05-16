@@ -163,13 +163,9 @@ int32_t main()
     fast_io();
 
     Solution sol;
-    vector<int> houses = {1, 2, 5}; // initial nums array
-    vector<vector<int>> queries = {
-        {1, -2}, // Update index 1 to -2
-        {0, -3}  // Update index 0 to -3
-    };
+    vector<int> costs = {1, 2, 5}; // initial nums array
 
-    int result = sol.maximumSumSubsequence(houses, queries);
+    int result = sol.minCostClimbingStairs(costs);
 
     cout << "Total sum of all queries: " << result << endl;
 
