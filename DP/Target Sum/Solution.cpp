@@ -169,24 +169,26 @@ public:
 // P - (S - P) = target
 // => 2P - S = target
 // => P = (target + S) / 2
-class DPMeth
-{
-public:
-    int findTargetSumWays(vector<int> &nums, int target)
-    {
-        int total = accumulate(nums.begin(),nums.end(), 0);
-        if((total + target)%2 != 0 || abs(target) > total) return 0;
-        int P = (target + total)/2;
-        vector<int> dp(P + 1, 0);
-        dp[0] = 1;
-        for(int num : nums){
-            for(int j = P;j>=0;j--){
+// Boils Down to Subset Sum problem
+class DPMeth{
+    public:
+    int findTargetSumWays(vector<int>& nums, int target) {
+        int total = accumulate(nums.begin(), nums.end(), 0);
+        if ((target + total) % 2 != 0 || abs(target) > total) return 0;
+
+        int subsetSum = (target + total) / 2;
+        vector<int> dp(subsetSum + 1, 0);
+        dp[0] = 1;  // There's 1 way to sum to 0 — use no elements
+
+        for (int num : nums) {
+            for (int j = subsetSum; j >= num; --j) {
                 dp[j] += dp[j - num];
             }
         }
-        return dp[P];
+
+        return dp[subsetSum];
     }
-}
+};
 
 // ========================================================================
 // Main Function
