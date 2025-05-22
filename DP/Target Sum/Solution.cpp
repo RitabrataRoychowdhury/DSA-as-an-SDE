@@ -114,87 +114,79 @@ const auto __ = []()
 // ========================================================================
 // Problem Solution Class
 // ========================================================================
-
 class Solution
 {
 public:
-    bool isSubsetSum(vector<int> &arr, int sum)
+    int findTargetSumWays(vector<int> &nums, int target)
     {
-        vector<vector<int>> dp() return isSubsetSumRec(arr, arr.size(), sum);
+        return dfs(nums, 0, target);
     }
-
-    bool isSubsetSumRec(vector<int> &nums, int n, int sum)
+    int dfs(vector<int> &nums, int index, int target)
     {
-        if (sum == 0)
-            return true;
-        if (n == 0)
-            return false;
-        if (nums[n - 1] > sum)
+        if (nums.size() == index)
         {
-            return isSubsetSumRec(nums, n - 1, sum);
+            return target == 0 ? 1 : 0;
         }
-        return isSubsetSumRec(nums, n - 1, sum) || isSubsetSumRec(nums, n - 1, sum - nums[n - 1]);
+        int sub = dfs(nums, index + 1, target + nums[index]);
+        int add = dfs(nums, index + 1, target - nums[index]);
+        return add + sub;
     }
 };
 
-class DP
+class DPSol
 {
 public:
-    vector<vector<int>> dp; // Memoization table
-
-    bool isSubsetSum(vector<int> &arr, int sum)
+    unordered_map<string, int> memo;
+    int findTargetSumWays(vector<int> &nums, int target)
     {
-        int n = arr.size();
-        // Initialize dp with -1
-        dp = vector<vector<int>>(n + 1, vector<int>(sum + 1, -1));
-        return isSubsetSumRec(arr, n, sum);
+        return dfs(nums, 0, target);
     }
-
-private:
-    bool isSubsetSumRec(vector<int> &nums, int n, int sum)
+    int dfs(vector<int> &nums, int index, int target)
     {
-        if (sum == 0)
-            return true;
-        if (n == 0)
-            return false;
-
-        if (dp[n][sum] != -1)
-            return dp[n][sum];
-
-        if (nums[n - 1] > sum)
-            return dp[n][sum] = isSubsetSumRec(nums, n - 1, sum);
-
-        return dp[n][sum] = isSubsetSumRec(nums, n - 1, sum) ||
-                            isSubsetSumRec(nums, n - 1, sum - nums[n - 1]);
-    }
-};
-
-// Bottom_up Version
-class BottomUp
-{
-public:
-    bool isSubsetSum(vector<int> &nums, int n, int sum)
-    {
-        vector<vector<bool>> dp(n + 1, vector<bool>(sum + 1, false));
-
-        // Base case: sum = 0 is always possible with 0 elements
-        for (int i = 0; i <= n; ++i)
-            dp[i][0] = true;
-
-        for (int i = 1; i <= n; ++i)
+        string key = to_string(index) + "," + to_string(target);
+        if (nums.size() == index)
         {
-            for (int s = 1; s <= sum; ++s)
-            {
-                if (nums[i - 1] > s)
-                    dp[i][s] = dp[i - 1][s];
-                else
-                    dp[i][s] = dp[i - 1][s] || dp[i - 1][s - nums[i - 1]];
+            return target == 0 ? 1 : 0;
+        }
+        int add = dfs(nums, index + 1, target - nums[index]);
+        int sub = dfs(nums, index + 1, target + nums[index]);
+        memo[key] = add + sub;
+        return memo[key];
+    }
+}
+
+// Maths + DP optimised:- We're trying to find the number of ways to assign + and - signs to elements in nums such that the resulting sum equals target.
+
+// Let’s define:
+
+// sum(nums) as S
+
+// Let the positive subset sum be P (the sum of elements assigned +)
+
+// Then the negative subset sum is N = S - P
+
+// We need:
+// P - (S - P) = target
+// => 2P - S = target
+// => P = (target + S) / 2
+class DPMeth
+{
+public:
+    int findTargetSumWays(vector<int> &nums, int target)
+    {
+        int total = accumulate(nums.begin(),nums.end(), 0);
+        if((total + target)%2 != 0 || abs(target) > total) return 0;
+        int P = (target + total)/2;
+        vector<int> dp(P + 1, 0);
+        dp[0] = 1;
+        for(int num : nums){
+            for(int j = P;j>=0;j--){
+                dp[j] += dp[j - num];
             }
         }
-
-        return dp[n][sum];
+        return dp[P];
     }
-};
+}
 
 // ========================================================================
 // Main Function
