@@ -115,28 +115,35 @@ const auto __ = []()
 // Problem Solution Class
 // ========================================================================
 // top down approach
-class Solution {
+class Solution
+{
 public:
-    int minCost(int n, vector<int>& cuts) {
-        int m = cuts.size();
-       cuts.push_back(n);
-       cuts.insert(cuts.begin(), 0);
-       sort(cuts.begin(), cuts.end());
-       vector<vector<int>> dp(m, vector<int>(m, -1));
-       return  solve(1, m - 2,cuts,dp);
+    int minCost(int n, vector<int> &cuts)
+    {
+        cuts.push_back(n);
+        cuts.insert(cuts.begin(), 0);
+        sort(cuts.begin(), cuts.end());
+        int m = cuts.size();  // After inserting 0 and n
+        vector<vector<int>> dp(m, vector<int>(m, -1));
+        return solve(1, m - 2, cuts, dp);
     }
 
-    int solve(int i, int j, vector<int>& cuts, vector<vector<int>>& dp){
-        if(i > j) return 0;
-        if(dp[i][j] != -1) return dp[i][j];
-        int ans = INT_MIN;
-        for(int k=i;k<=j;k++){
-            int cost = cuts[j + 1] - cuts[i - 1] + solve(i, k - 1,cuts, dp) + solve(k + 1, j, cuts, dp);
+    int solve(int i, int j, vector<int> &cuts, vector<vector<int>> &dp)
+    {
+        if (i > j)
+            return 0;
+        if (dp[i][j] != -1)
+            return dp[i][j];
+        int ans = INT_MAX;
+        for (int k = i; k <= j; k++)
+        {
+            int cost = cuts[j + 1] - cuts[i - 1] + solve(i, k - 1, cuts, dp) + solve(k + 1, j, cuts, dp);
             ans = min(ans, cost);
         }
-        return ans;
+        return dp[i][j] = ans;
     }
 };
+
 // ========================================================================
 // Main Function
 // ========================================================================
