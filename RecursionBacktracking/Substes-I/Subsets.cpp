@@ -111,7 +111,7 @@ public:
     void dfs(vector<int> &nums, vector<vector<int>> &res, vector<int> &temp, int index)
     {
         res.push_back(temp);
-        for (int i = index; i < nums.size(); i++)
+        for (int i = index; i < nums.size(); i++) //iterate on the start levels 
         { // we start at i
             temp.push_back(nums[i]);
             dfs(nums, res, temp, i + 1); // then from i move to next chars in the loop
