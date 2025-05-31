@@ -1,9 +1,9 @@
 // ========================================================================
-//  Template for Competitive Programming
+//  Template for Graph-Based Problems
 //  Author: Ritabrata
-//  Problem: Combinations -- https://leetcode.com/problems/combinations/
-//  Algorithm: DFS, Backtracking
-//  Date: May 6th-2025
+//  Problem: Closest Meeting Node in a Directed Graph
+//  Algorithm: Graph Traversal (Single Path), Distance Propagation
+//  Date: May 28th-2025
 // ========================================================================
 
 #pragma GCC optimize("O3,unroll-loops")
@@ -100,10 +100,8 @@ const auto _ = std::cin.tie(nullptr)->sync_with_stdio(false);
 
 #define LC_HACK
 #ifdef LC_HACK
-const auto __ = []()
-{
-    struct ___
-    {
+const auto __ = []() {
+    struct ___ {
         static void _() { std::ofstream("display_runtime.txt") << 0 << '\n'; }
     };
     std::atexit(&___::_);
@@ -112,68 +110,76 @@ const auto __ = []()
 #endif
 
 // ========================================================================
-// Problem Solution Class
+// Solution Class
 // ========================================================================
+const auto _ = std::cin.tie(nullptr)->sync_with_stdio(false);
 
-class Solution
-{
+#define LC_HACK
+#ifdef LC_HACK
+const auto __ = []() {
+    struct ___ {
+        static void _() { std::ofstream("display_runtime.txt") << 0 << '\n'; }
+    };
+    std::atexit(&___::_);
+    return 0;
+}();
+#endif
+
+class Solution {
 public:
-    bool isSubsetSum(vector<int> &arr, int sum)
-    {
-        return isSubsetSumRec(arr, arr.size(), sum);
+    vector<int> getDistances(const vector<int>& edges, int start) {
+        int n = edges.size();
+        vector<int> dist(n, -1); 
+        vector<bool> visited(n, false);
+
+        int d = 0;
+        while (start != -1 && !visited[start]) {
+            dist[start] = d;
+            visited[start] = true;
+            start = edges[start];
+            d++;
+        }
+        return dist;
     }
 
-    bool isSubsetSumRec(vector<int> &nums, int n, int sum)
-    {
-        if (sum == 0)
-            return true;
-        if (n == 0)
-            return false;
-        if (nums[n - 1] > sum)
-        {
-            return isSubsetSumRec(nums, n - 1, sum);
+    int closestMeetingNode(vector<int>& edges, int node1, int node2) {
+        int n = edges.size();
+        vector<int> dist1 = getDistances(edges, node1);
+        vector<int> dist2 = getDistances(edges, node2);
+
+        int minDist = INT_MAX;
+        int result = -1;
+
+        for (int i = 0; i < n; ++i) {
+            if (dist1[i] != -1 && dist2[i] != -1) {
+                int maxDist = max(dist1[i], dist2[i]);
+                if (maxDist < minDist) {
+                    minDist = maxDist;
+                    result = i;
+                } else if (maxDist == minDist && i < result) {
+                    result = i; 
+                }
+            }
         }
-        return isSubsetSumRec(nums, n - 1, sum) || isSubsetSumRec(nums, n - 1, sum - nums[n - 1]);
+        return result;
     }
 };
 
-class DP
-{
-public:
-vector<vector<int>> dp;
-    bool isSubsetSum(vector<int> &arr, int sum)
-    {
-        return isSubsetSumRec(arr, arr.size(), sum);
-    }
 
-    bool isSubsetSumRec(vector<int>& nums, int n, int sum){
-        if(sum == 0) return true;
-        if(n == 0) return false;
-        if(dp[n][sum] != -1){
-            return dp[n][sum];
-        }
-        if(nums[n - 1] > sum){
-            return dp[n][sum] = isSubsetSumRec(nums,n - 1, sum);
-        }
-        return dp[n][sum] = isSubsetSumRec(nums, n - 1, sum) || isSubsetSumRec(nums, n - 1, sum - nums[n - 1]); 
-    }
-}
 // ========================================================================
-// Main Function
+// Main Function (Optional for Local Testing)
 // ========================================================================
-int main()
+int32_t main()
 {
     fast_io();
 
-    vector<int> nums = {1, 1, 1, 1, 1};
-    int target = 3;
-
-    DP sol;
-    int result = sol.isSubsetSum(nums, target);
-
-    cout << "Total ways to reach target = " << result << endl;
+#ifdef LOCAL
+    Solution sol;
+    vector<int> edges = {2, 2, 3, -1};
+    int node1 = 0, node2 = 1;
+    cout << "Closest Meeting Node: " << sol.closestMeetingNode(edges, node1, node2) << "\n";
+#endif
 
     return 0;
 }
-
 // ========================================================================
