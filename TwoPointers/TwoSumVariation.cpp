@@ -1,7 +1,6 @@
 // Ques. Given an array of ‘n’ integers, your task is to print the indices of four integers (a, b, c, d) such that ‘a+b = c+d’. (It was a very loose ended question. I had to explicitly clarify a lot of things before getting a clear picture of output).
 
-#include <vector>
-#include <unordered_map>
+#include <bits/stdc++.h>
 using namespace std;
 
 // Function that returns 4 indices: i, j, k, l such that arr[i] + arr[j] == arr[k] + arr[l]
